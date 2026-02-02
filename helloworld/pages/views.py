@@ -69,6 +69,12 @@ class ProductForm(forms.Form):
     name = forms.CharField(required=True)
     price = forms.FloatField(required=True)
 
+    def clean_price(self):
+        price = self.cleaned_data.get("price")
+        if price is None or price <= 0:
+            raise forms.ValidationError("Price must be greater than 0.")
+        return price
+
 class ProductCreateView(View):
     template_name = 'products/create.html'
 
