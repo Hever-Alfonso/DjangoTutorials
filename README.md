@@ -1,95 +1,83 @@
+# Tutorial 2 - Arquitectura de Software (Django)
 
-# Tutorial 1 – Arquitectura de Software (Django)
+Proyecto desarrollado como parte del Taller 2 de Arquitectura de Software, utilizando el framework Django con persistencia real en base de datos, modelos, migraciones, factories y relaciones entre modelos.
 
-Proyecto desarrollado como parte del Taller 1 de Arquitectura de Software, utilizando el framework Django y aplicando el patrón arquitectónico MVT (Model – View – Template).
-
-El proyecto fue construido de manera incremental, siguiendo estrictamente las actividades definidas en el documento guía del taller y manteniendo buenas prácticas de desarrollo y control de versiones con Git.
+El proyecto fue construido de manera incremental sobre el Tutorial 1, siguiendo estrictamente las actividades definidas en el documento guia del taller y manteniendo buenas practicas de desarrollo y control de versiones con Git.
 
 ---
 
-## Descripción del proyecto
+## Descripcion del proyecto
 
-La aplicación representa una tienda en línea básica, cuyo objetivo principal es comprender:
+La aplicacion representa una tienda en linea que ahora persiste datos realmente en una base de datos SQLite. El objetivo principal es comprender:
 
-- La estructura de un proyecto Django
-- El manejo de vistas, templates y rutas
-- El uso de formularios y validaciones
-- El flujo completo de una aplicación web
-- El control de versiones con Git y GitHub
-
-Este proyecto no persiste productos en base de datos, ya que el enfoque del taller es arquitectónico y no de persistencia.
+- La creacion y uso de modelos Django
+- El sistema de migraciones
+- El uso de factories y seeders para datos de prueba
+- Las relaciones entre modelos (ForeignKey)
+- El ORM de Django para consultar la base de datos
+- El flujo completo de una aplicacion web con persistencia real
 
 ---
 
 ## Arquitectura aplicada (MVT)
 
-El proyecto sigue el patrón MVT (Model – View – Template) de Django:
+El proyecto sigue el patron MVT (Model - View - Template) de Django:
 
 ### Model
-- Representado por estructuras simples (listas y diccionarios)
-- Simula los datos de productos
+- Modelo `Product` con campos: name, price, created_at, updated_at
+- Modelo `Comment` relacionado con Product mediante ForeignKey
+- Migraciones generadas automaticamente por Django
 
 ### View
-- Maneja la lógica de negocio
-- Procesa peticiones HTTP
-- Valida datos
-- Controla el flujo de la aplicación
+- Consultas reales a la base de datos mediante el ORM de Django
+- Formularios basados en ModelForm para guardar directamente en la BD
+- Vistas genericas de Django (ListView)
 
 ### Template
-- Encargado únicamente de la presentación
-- Usa herencia de templates
-- Implementa condicionales y variables de contexto
+- Listado de productos desde la base de datos
+- Detalle de producto con comentarios relacionados
+- Formulario de creacion con confirmacion
 
 ---
 
-## Tecnologías utilizadas
+## Tecnologias utilizadas
 
-- Python 3
-- Django
+- Python 3.12
+- Django 5.2
+- factory-boy y Faker (generacion de datos de prueba)
 - HTML (Django Templates)
 - CSS
 - Bootstrap
-- SQLite (configuración por defecto de Django)
+- SQLite
 - Git y GitHub
-- Entorno virtual (venv)
+- Conda (entorno virtual)
 
 ---
 
 ## Estructura del proyecto
-
 ```
 .
-├── .venv/
 ├── helloworld/
 │   ├── helloworld_project/
 │   ├── pages/
-│   │   ├── __pycache__/
+│   │   ├── management/
+│   │   │   └── commands/
+│   │   │       └── seed_products.py
 │   │   ├── migrations/
 │   │   ├── static/
-│   │   │   └── pages/
-│   │   │       └── app.css
 │   │   ├── templates/
 │   │   │   ├── pages/
-│   │   │   │   ├── base.html
-│   │   │   │   ├── home.html
-│   │   │   │   ├── about.html
-│   │   │   │   └── contact.html
 │   │   │   └── products/
-│   │   │       ├── index.html
-│   │   │       ├── show.html
-│   │   │       ├── create.html
-│   │   │       └── created.html
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
+│   │   ├── factories.py
 │   │   ├── models.py
-│   │   ├── tests.py
 │   │   ├── urls.py
 │   │   └── views.py
-│   ├── db.sqlite3
 │   └── manage.py
 ├── .gitignore
+├── COMMANDS.md
+├── Dockerfile
 ├── README.md
+├── docker-compose.yml
 └── requirements.txt
 ```
 
@@ -97,40 +85,30 @@ El proyecto sigue el patrón MVT (Model – View – Template) de Django:
 
 ## Funcionalidades implementadas
 
-- Página Home
-- Página About
-- Página Contact
-- Listado de productos
-- Detalle de productos
-- Creación de productos mediante formulario
-- Validaciones de formulario
-- Confirmación de creación de producto
-- Navegación completa desde el menú
+- Listado de productos desde la base de datos
+- Detalle de producto con precio condicional (rojo si supera 2000)
+- Comentarios relacionados al producto
+- Creacion de productos mediante formulario con persistencia en BD
+- Confirmacion de creacion
+- Seeder para poblar la BD con datos de prueba
+- Migraciones de base de datos
 
 ---
 
-## Cómo ejecutar el proyecto
+## Como ejecutar el proyecto
 
-### Opción 1: Entorno virtual (venv)
+### Opcion 1: Conda
 
 1. Clonar el repositorio
 ```bash
 git clone <URL_DEL_REPOSITORIO>
-cd tutorial-1-arquitectura
+cd DjangoTutorials
 ```
 
-2. Crear y activar el entorno virtual
-
-Linux / macOS:
+2. Crear y activar el entorno
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-Windows:
-```bash
-python -m venv .venv
-.venv\Scripts\activate
+conda create -n hever_tutorial_2 python=3.12
+conda activate hever_tutorial_2
 ```
 
 3. Instalar dependencias
@@ -138,65 +116,47 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-4. Ejecutar el servidor
+4. Aplicar migraciones y poblar la base de datos
 ```bash
 cd helloworld
+python manage.py migrate
+python manage.py seed_products
+```
+
+5. Ejecutar el servidor
+```bash
 python manage.py runserver
 ```
 
-5. Abrir en el navegador
+6. Abrir en el navegador
 ```
 http://127.0.0.1:8000/
 ```
 
----
-
-### Opción 2: Docker y Docker Compose
-
-Este proyecto también puede ejecutarse mediante contenedores, usando Docker.
-
-1. Asegúrate de tener instalado:
-   - Docker
-   - Docker Compose
-
-2. Desde la raíz del proyecto, ejecutar:
+### Opcion 2: Docker
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
-3. Acceder en el navegador:
-- Aplicación Django: [http://localhost:8000](http://localhost:8000)
-- pgAdmin: [http://localhost:5050](http://localhost:5050)
-   - Email: `admin@admin.com`
-   - Contraseña: `admin`
+Acceder en: http://localhost:8000
 
 ---
 
 ## Control de versiones
 
-El proyecto utiliza Git siguiendo buenas prácticas:
+El proyecto utiliza Git siguiendo buenas practicas:
 
-- Desarrollo por ramas (una por cada activity)
-- Commits con convención Conventional Commits
+- Desarrollo en rama `feat/tutorial-02-django-models`
+- Commits con convencion Conventional Commits
 - Historial limpio y trazable
-- Las ramas de actividades se conservan como evidencia del proceso
 
 Ejemplo de commit:
 ```
-feat(products): add product created confirmation page
+feat(pages): add Product model with migration
 ```
-
----
-
-## Estado del proyecto
-
-- Todas las actividades del taller han sido completadas
-- El proyecto funciona correctamente
-- La arquitectura MVT está correctamente aplicada
-- El repositorio contiene el historial completo del desarrollo
 
 ---
 
 ## Autor
 
-Hever Andre Alfonso Jimenez - Universidad EAFIT - Proyecto desarrollado como parte de un taller académico de Arquitectura de Software utilizando Django.
+Hever Andre Alfonso Jimenez - Universidad EAFIT - Proyecto desarrollado como parte de un taller academico de Arquitectura de Software utilizando Django.

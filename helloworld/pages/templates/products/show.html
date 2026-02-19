@@ -24,6 +24,13 @@
           <p class="card-text">{{product.price}}</p>
         {% endif %}
 
+        <!-- Recorremos todos los comentarios asociados a este producto -->
+        <!-- product.comment_set.all accede a los comentarios del producto -->
+        <!-- Django genera automaticamente comment_set desde el ForeignKey -->
+        {% for comment in product.comment_set.all %}
+          - {{ comment.description }}<br />
+        {% endfor %}
+
       </div>
     </div>
   </div>

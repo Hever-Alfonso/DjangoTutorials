@@ -18,3 +18,19 @@ class Product(models.Model):
 
     # Fecha y hora de ultima modificacion, se actualiza automaticamente al guardar
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Comment(models.Model):
+    """
+    Modelo que representa un comentario asociado a un producto.
+    Genera la tabla 'pages_comment' en la base de datos.
+    Un producto puede tener muchos comentarios (relacion uno a muchos).
+    """
+
+    # ForeignKey crea la relacion con Product.
+    # on_delete=CASCADE significa que si se borra el producto,
+    # todos sus comentarios se borran automaticamente tambien.
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    # Texto del comentario, sin limite de caracteres (TextField)
+    description = models.TextField()
