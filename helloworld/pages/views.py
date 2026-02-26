@@ -146,3 +146,65 @@ class ContactPageView(TemplateView):
         context["address"] = "Calle falsa 123, Medellín, Antioquia"
         context["phone"] = "+57 300 000 0000"
         return context
+
+
+class CartView(View):
+    """
+    Vista del carrito de compras. Usa sesiones de Django para persistir
+    los productos seleccionados entre peticiones sin necesidad de base de datos.
+
+    GET: muestra todos los productos disponibles y los que estan en el carrito.
+    POST: agrega un producto al carrito guardando su ID en la sesion.
+    """
+    template_name = 'cart/index.html'
+
+    def get(self, request):
+        # Base de datos simulada de productos disponibles
+        # En una app real esto vendria de la BD (e.g. Product.objects.all())
+        products = {}
+        products[121] = {'name': 'Tv samsung', 'price': '1000'}
+        products[11] = {'name': 'Iphone', 'price': '2000'}
+
+        # Recuperamos los IDs guardados en sesion y filtramos los productos del carrito
+        # request.session actua como un diccionario persistente entre peticiones
+        cart_products = {}
+        cart_product_data = request.session.get('cart_product_data', {})
+        for key, product in products.items():
+            if str(key) in cart_product_data.keys():
+                cart_products[key] = product
+
+        # Preparamos los datos que recibira el template
+        view_data = {
+            'title': 'Cart - Online Store',
+            'subtitle': 'Shopping Cart',
+            'products': products,
+            'cart_products': cart_products
+        }
+        return render(request, self.template_name, view_data)
+
+    def post(self, request, product_id):
+        # Recuperamos el carrito actual de la sesion (o un dict vacio si no existe)
+        cart_product_data = request.session.get('cart_product_data', {})
+
+        # Agregamos el nuevo producto usando su ID como clave
+        cart_product_data[product_id] = product_id
+
+        # Guardamos el carrito actualizado en la sesion
+        request.session['cart_product_data'] = cart_product_data
+
+        return redirect('cart_index')
+
+
+class CartRemoveAllView(View):
+    """
+    Vista para vaciar el carrito de compras.
+    Elimina la clave 'cart_product_data' de la sesion actual.
+    Solo responde a POST para seguir el patron de seguridad REST
+    (las acciones destructivas no deben hacerse con GET).
+    """
+
+    def post(self, request):
+        # Solo borramos si la clave existe para evitar KeyError
+        if 'cart_product_data' in request.session:
+            del request.session['cart_product_data']
+        return redirect('cart_index')
