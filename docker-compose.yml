@@ -29,17 +29,15 @@ services:
       - "8000:8000"
 
     # volumes:
-    # - Persistencia de datos (SQLite)
-    # - Montamos un volumen nombrado llamado "sqlite_data" en el contenedor:
-    #   /app/helloworld/data
-    #
-    # Importante:
-    # - En settings.py configuramos SQLite para guardarse en:
+    # - sqlite_data: persistencia de la base de datos SQLite.
+    #   En settings.py configuramos SQLite para guardarse en:
     #   /app/helloworld/data/db.sqlite3
-    # - Como esa carpeta está montada a un volumen, los datos NO se pierden
-    #   al bajar/subir contenedores.
+    # - media_data: persistencia de imagenes subidas por el usuario.
+    #   Montado en /app/helloworld/media para que las imagenes
+    #   no se pierdan al bajar/subir contenedores.
     volumes:
       - sqlite_data:/app/helloworld/data
+      - media_data:/app/helloworld/media
 
 
 # ---------------------------------------------------------
@@ -49,3 +47,4 @@ services:
 # El contenedor es efímero, el volumen NO.
 volumes:
   sqlite_data:
+  media_data:
