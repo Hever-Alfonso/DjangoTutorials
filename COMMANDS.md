@@ -16,7 +16,7 @@ Este documento describe los comandos necesarios para ejecutar y manejar el proye
 
 ### Activar el entorno antes de cualquier comando
 ```bash
-conda activate hever_tutorial_2
+conda activate base
 cd helloworld
 ```
 
@@ -85,6 +85,50 @@ Resultado esperado: "Successfully seeded products"
 ### Paso 4: Abrir en el navegador
 ```
 http://localhost:8000
+```
+
+### Paso 5: Probar la API REST
+
+Registrar usuario:
+```bash
+curl -X POST http://localhost:8000/api/signup/ \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testproducts", "password": "testpass123"}'
+```
+
+Login:
+```bash
+curl -X POST http://localhost:8000/api/login/ \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testproducts", "password": "testpass123"}'
+```
+
+Listar productos (reemplaza <token> con el token retornado):
+```bash
+curl http://localhost:8000/api/products/ \
+  -H "Authorization: Token <token>"
+```
+
+Crear producto:
+```bash
+curl -X POST http://localhost:8000/api/products/ \
+  -H "Authorization: Token <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Tv Samsung", "price": 1000}'
+```
+
+Actualizar producto:
+```bash
+curl -X PUT http://localhost:8000/api/products/1 \
+  -H "Authorization: Token <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Tv Samsung 4K", "price": 1500}'
+```
+
+Borrar producto:
+```bash
+curl -X DELETE http://localhost:8000/api/products/1 \
+  -H "Authorization: Token <token>"
 ```
 
 ### Otros comandos utiles con Docker
