@@ -47,7 +47,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pages',  # app agregada
+    # Custom apps start here
+    'pages',
+    'api.apps.ApiConfig',
+    # Third-party apps start here
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -154,3 +159,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Para usar otro storage (e.g. S3), solo cambia esta linea.
 # ------------------------------------------------------------
 IMAGE_STORAGE_CLASS = 'pages.utils.ImageLocalStorage'
+
+# ------------------------------------------------------------
+# Django REST Framework
+# Configura TokenAuthentication como metodo de autenticacion
+# por defecto para todos los endpoints de la API.
+# El cliente debe enviar el token en el header de cada peticion:
+# Authorization: Token <token>
+# ------------------------------------------------------------
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
